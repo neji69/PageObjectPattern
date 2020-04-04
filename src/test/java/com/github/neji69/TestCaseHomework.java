@@ -95,10 +95,10 @@ public class TestCaseHomework {
         }
     }
 
-        @AfterTest
-        public void exitDriver() {
-            driver.quit();
-        }
+    @AfterTest
+    public void exitDriver() {
+        driver.quit();
+    }
 
 }
 

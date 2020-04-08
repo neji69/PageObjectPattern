@@ -10,6 +10,10 @@ public class OverviewPage {
         this.driver = driver;
     }
 
-    public By financeFreeLocator = By.id("can-spend");
-    public By financeFreeBalanceLocator = By.className("amount");
+    private By financeFreeLocator = By.id("can-spend");
+
+    public By getFinanceFreeLocator() {
+        return financeFreeLocator;
+    }
+
 }

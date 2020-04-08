@@ -5,20 +5,20 @@ import org.openqa.selenium.WebDriver;
 
 public class TwoFactAuth {
     private WebDriver driver;
-    By smsCodeLocator = By.id("otp-code");
-    By smsButtonLocator = By.id("login-otp-button");
+    private By smsCodeLocator = By.id("otp-code");
+    private By smsButtonLocator = By.id("login-otp-button");
 
 
     public TwoFactAuth(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void inputSmsCode(String smsCode) {
+    private void inputSmsCode(String smsCode) {
         driver.findElement(smsCodeLocator).clear();
         driver.findElement(smsCodeLocator).sendKeys(smsCode);
     }
 
-    public void clickButtonSmsAuthorization() {
+    private void clickButtonSmsAuthorization() {
         driver.findElement(smsButtonLocator).click();
 
     }

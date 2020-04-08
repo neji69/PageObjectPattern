@@ -5,9 +5,9 @@ import org.openqa.selenium.WebDriver;
 
 public class BspbRuAuth {
     private WebDriver driver;
-    By usernameLocator = By.name("username");
-    By passwordLocator = By.name("password");
-    By loginButtonLocator = By.id("login-button");
+    private By usernameLocator = By.name("username");
+    private By passwordLocator = By.name("password");
+    private By loginButtonLocator = By.id("login-button");
 
 
     public BspbRuAuth(WebDriver driver) {
@@ -15,17 +15,17 @@ public class BspbRuAuth {
     }
 
 
-    void inputLogin(String login) {
+    private void inputLogin(String login) {
         driver.findElement(usernameLocator).clear();
         driver.findElement(usernameLocator).sendKeys(login);
     }
 
-    public void inputPassword(String password) {
+    private void inputPassword(String password) {
         driver.findElement(passwordLocator).clear();
         driver.findElement(passwordLocator).sendKeys(password);
     }
 
-    public void clickButtonAuthorization() {
+    private void clickButtonAuthorization() {
         driver.findElement(loginButtonLocator).click();
     }
 
@@ -36,15 +36,3 @@ public class BspbRuAuth {
         return new TwoFactAuth(driver);
     }
 }
-
-
-//    @BeforeTest
-//    public void setUp() {
-//        WebDriverManager.chromedriver().setup();
-//        ChromeOptions chromeOptions = new ChromeOptions();
-//        driver = new ChromeDriver(chromeOptions);
-//        webDriverWait = new WebDriverWait(driver, 30);
-//        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-//        driver.get("https://idemo.bspb.ru");
-//        driver.manage().window().maximize();
-//    }

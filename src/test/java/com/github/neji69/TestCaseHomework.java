@@ -12,6 +12,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +21,6 @@ public class TestCaseHomework {
     private static final Logger log = LoggerFactory.getLogger(TestCaseHomework.class);
     WebDriver driver;
     WebDriverWait webDriverWait;
-
 
     @BeforeTest
     public void setUp() {
@@ -34,11 +34,12 @@ public class TestCaseHomework {
     }
 
     @Test
-    public void testCase20() {
+    public void testCase20() throws InterruptedException {
         //Данные для теста (логин,пароль и смс для авторизации)
         String login = "demo";
         String password = "demo";
         String smsCode = "0000";
+        Pattern pattern = Pattern.compile("[0-9]{1,3} [0-9]{1,3} [0-9]{1,3}[.][0-9][0-9] [₽]");
 
         BspbRuAuth bspbRuAuth = new BspbRuAuth(driver);
         TwoFactAuth twoFactAuth = bspbRuAuth.authorize(login, password, driver);
@@ -48,51 +49,24 @@ public class TestCaseHomework {
                 .isEqualTo("Старт - Интернет банк - Банк Санкт-Петербург");
         OverviewPage overviewPage = home.clickButtonOverview(driver);
 
+        Thread.sleep(1000); //без этого не работает, страница не успевает прогружаться, а тест уже падает из за не найденных данных.
         assertThat(driver.getTitle())
                 .as("Открылась страница «Обзор»")
                 .contains("Обзор");
 
-        assertThat(driver.findElement(overviewPage.financeFreeLocator).getText())
-                .as("На странице отображается блок «Финансовая свобода»")
-                .contains("Финансовая свобода");
+        assertThat(driver.findElement(overviewPage.getFinanceFreeLocator()).getText())
+                .as("На странице отображается блок «Финансовая свобода» и сумма в блоке 'финансовая свобода' в формате 123 456 789.00 ")
+                .contains("Финансовая свобода")
+                .containsPattern(pattern);
 
-
-        System.out.println("1 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("2 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("3 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("4 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("5 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("6 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("7 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("8 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("9 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("10 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("11 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("12 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("13 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("14 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-        System.out.println("15 " + driver.findElement(overviewPage.financeFreeBalanceLocator).getText());
-
-        try {
-            // webDriverWait.until (ExpectedConditions.textMatches(overviewPage.financeFreeBalanceLocator,2 718 764.83"))
-            assertThat(driver.findElement(overviewPage.financeFreeBalanceLocator).getText())
-                    .as(" с указанием суммы в формате 123 456 789.00 ")
-                    .contains("123 456 789.00");
-        } catch (AssertionError e) {
-            log.error("Не соответствие баланса", e);
-
-        }
         //Навести курсор на сумму в блоке «Финансовая свобода»
         Actions actions = new Actions(driver);
-        actions.moveToElement(driver.findElement(overviewPage.financeFreeLocator)).build().perform();
+        actions.moveToElement(driver.findElement(overviewPage.getFinanceFreeLocator())).build().perform();
 
-        try {
-            assertThat(driver.findElement(overviewPage.financeFreeLocator).getText())
+            assertThat(driver.findElement(overviewPage.getFinanceFreeLocator()).getText())
                     .as("Появляется надпись: «Моих средств» с указанием суммы в формате 123 456 789.00 ")
-                    .contains("123 456 789.00");
-        } catch (AssertionError e) {
-            log.error("Не соответствие баланса", e);
-        }
+                    .contains("Моих средств")
+                    .containsPattern(pattern);
     }
 
     @AfterTest
